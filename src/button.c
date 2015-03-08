@@ -16,6 +16,8 @@
 ******************************************/
 
 uint16_t button_mask = 0;
+uint8_t button_stack[SIZE_BUTTON_STACK];
+uint8_t button_stack_pos = 0;
 
 void button_init(void)
 {
@@ -60,6 +62,49 @@ void enable_line(char n)
 	}
 }
 
+void button_push(uint8_t key)
+{
+	if(button_stack_pos < SIZE_BUTTON_STACK)
+	{
+		button_stack[button_stack_pos] = key;
+		button_stack_pos++;
+	}
+	else
+	{
+		for(int i = 0; i < SIZE_BUTTON_STACK - 1; i++)
+		{
+			button_stack[i] = button_stack[i + 1];
+		}
+		button_stack[SIZE_BUTTON_STACK - 1] = key;
+	}
+}
+
+int16_t button_pop()
+{
+	if(button_stack_pos > 0)
+	{
+		button_stack_pos--;
+		return button_stack[button_stack_pos];
+	}
+	return -1;
+}
+
+void button_stack_clear(void)
+{
+	button_stack_pos = 0;
+}
+
+void button_compare_fail(uint16_t mask)
+{
+	for(uint16_t i = 0; i < AMOUNT_KEY; i++)
+	{
+		if(((mask >> i) & 0x1) < ((button_mask >> i) & 0x1))
+		{
+			button_push(i);
+		}
+	}
+}
+
 void button_update(void)
 {
 	static char l_count = 0;
@@ -96,11 +141,30 @@ void button_update(void)
 			l_count = 0;
 			return;
 	}
+    button_compare_fail(tmpmask);
 	button_mask = tmpmask;
 	if(++l_count > AMOUNT_LINE) l_count = 0;
 }
 
-int button_get_key(void)
+int16_t button_get_key(void)
 {
-    return button_mask;
+    return button_pop();
+}
+
+int16_t button_get_dec(void)
+{
+	uint8_t n = AMOUNT_KEY;
+	while(n--)
+	{
+		if(button_mask & 0x1)
+		{
+			if(button_mask >> 1) return -1;
+			return AMOUNT_KEY - n - 1;
+		}
+		else
+		{
+			button_mask >>= 1;
+		}
+	}
+	return -2;
 }

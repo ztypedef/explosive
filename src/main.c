@@ -3,8 +3,21 @@
 #include "evaluator.h"
 #include "button.h"
 #include "stdio.h"
-#include "ff.h"
+//#include "sdcard.h"
+#include "LED4X.h"
+#include "explosion.h"
+#include "pflash.h"
 
+/* used timer
+TIM1 TIM2 TIM3 TIM6 TIM7 TIM15 TIM16
+
+TIM2 - sound
+TIM6 - evaluator
+TIM7 - sdcard
+TIM3 - explosion
+
+TIM1 TIM15 TIM16
+*/
 int putchar (int c)
 {
     if(c == '\n') 
@@ -14,51 +27,40 @@ int putchar (int c)
     return 0;
 }
 
-
-char buff[1024];
-FRESULT result;
-
-
 int main()
 {
-	button_init();
 	uart_init();
-    ev_init();
-	printf("%s\n", "START");
+	//printf("%s\n", "START");
+	button_init();
+	//ev_init();
+   	led_init();
+	explosion_init();
+	setting_password();
+	setting_time();
+	//
 
-    
-    FATFS FATFS_Obj;
-    FIL file;
-    
-    // Монтирование диска
-    result = f_mount(0, &FATFS_Obj);
-    
-    //scan_files("0:/");
-    // Открытие файла
-    UINT nRead;
-    result = f_open(&file, "0:/1.txt", FA_OPEN_EXISTING | FA_READ);
-    if (result == FR_OK)
-    {
-            f_read(&file, &buff, 1024, &nRead);
-            f_close(&file);
-    }
-    // Закрытие файла
-    result = f_close(&file);
-    printf("%s\n", buff);
-    
-    // Чтение файла порциями по 2048 байт
-    /*
-    do
-    {
-        result = f_read(&file, (BYTE *)temp_buff, 4096, (UINT*)&read_size);
-        full_size += read_size;
-    }
-    while ((result == FR_OK) && (read_size == 4096));
-*/
+	
+    led_other_pin(0x4);
+	led_char(0x30 + 0, 0);
+    led_char(0x30 + 0, 1);
+   	led_char(0x30 + 0, 2);
+ 	led_char(0x30 + 0, 3);
+	while(!explotion_get_state_getectors())
+	{
+		button_update();
+        ev_idle();
+		led_update();
+	}
+	explotion_count_down();
 	
 	while(1)
     {
         button_update();
         ev_idle();
+		led_update();
+		
+		explotion_check_pin();
+        //uint16_t bt = button_get_key();
+		//led_char(0x30 + bt, 0);
     }
 }

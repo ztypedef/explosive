@@ -12,8 +12,8 @@ void ev_init(void)
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE);
 	
 	NVIC_InitStruct.NVIC_IRQChannel = TIM6_DAC_IRQn;
-	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStruct.NVIC_IRQChannelSubPriority = 1;
 	NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStruct);
 	
@@ -37,9 +37,9 @@ inline void ev_idle(void)
 
 void TIM6_DAC_IRQHandler(void)
 {
-    disk_timerproc();
+    //disk_timerproc();
 	//printf("%i\n", ev_count);
-    //ev_count = 0;
+    ev_count = 0;
     
 	TIM_ClearFlag(TIM6, TIM_FLAG_Update);
 }
