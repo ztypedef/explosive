@@ -1,6 +1,6 @@
 #include "main.h"
 #include "buart.h"
-#include "evaluator.h"
+//#include "evaluator.h"
 #include "button.h"
 #include "stdio.h"
 //#include "sdcard.h"
@@ -29,6 +29,28 @@ int putchar (int c)
 
 int main()
 {
+    //FLASH_SetLatency(FLASH_Latency_1);
+    /*
+    RCC_PLLConfig(RCC_PLLSource_HSI_Div2, RCC_PLLMul_4);
+    RCC_PLLCmd(ENABLE);
+
+    while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
+
+    RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);    
+
+    while(RCC_GetSYSCLKSource() != 0x08);
+    */
+    
+    FLASH_SetLatency(FLASH_Latency_1);
+
+
+	RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_6);
+	RCC_PLLCmd(ENABLE);
+	
+	while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET) {}
+	RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+    
+    
 	uart_init();
 	//printf("%s\n", "START");
 	button_init();
@@ -48,7 +70,7 @@ int main()
 	while(!explotion_get_state_getectors())
 	{
 		button_update();
-        ev_idle();
+        //ev_idle();
 		led_update();
 	}
 	explotion_count_down();
@@ -56,7 +78,7 @@ int main()
 	while(1)
     {
         button_update();
-        ev_idle();
+        //ev_idle();
 		led_update();
 		
 		explotion_check_pin();

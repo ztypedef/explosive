@@ -58,9 +58,9 @@ void explosion_init(void)
 	NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStruct);
 		
-	TIM_TimeBaseInitStruct.TIM_Prescaler = 500;
+	TIM_TimeBaseInitStruct.TIM_Prescaler = 1000;
 	TIM_TimeBaseInitStruct.TIM_CounterMode = TIM_CounterMode_Down;
-	TIM_TimeBaseInitStruct.TIM_Period = 16000;
+	TIM_TimeBaseInitStruct.TIM_Period = 24000;
 	TIM_TimeBaseInitStruct.TIM_ClockDivision = 0;
 	TIM_TimeBaseInitStruct.TIM_RepetitionCounter = 0;
 	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseInitStruct);
@@ -297,7 +297,7 @@ void explosion_the_end(void)
 void explosion_pass_error(void)
 {
 	//TIM_TimeBaseInitStruct.TIM_Period = 1000;
-	TIM3->ARR = 1000;
+	TIM3->ARR = 2000;
 }
 
 void TIM3_IRQHandler(void)

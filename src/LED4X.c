@@ -41,7 +41,7 @@ void led_init(void)
 	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
 	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
 	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_32; // 72000kHz/256=281kHz < 400kHz
+	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256; // 72000kHz/256=281kHz < 400kHz
 	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
 	SPI_InitStructure.SPI_CRCPolynomial = 0;
 

@@ -10,9 +10,9 @@ void sdcard_init(void)
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStruct;
 	NVIC_InitTypeDef NVIC_InitStruct;
 	
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM7, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 	
-	NVIC_InitStruct.NVIC_IRQChannel = TIM7_IRQn;
+	NVIC_InitStruct.NVIC_IRQChannel = TIM4_IRQn;
 	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
@@ -23,17 +23,17 @@ void sdcard_init(void)
 	TIM_TimeBaseInitStruct.TIM_Period = 0x8000;
 	TIM_TimeBaseInitStruct.TIM_ClockDivision = 0x0;
 	TIM_TimeBaseInitStruct.TIM_RepetitionCounter = 0;
-	TIM_TimeBaseInit(TIM7, &TIM_TimeBaseInitStruct);
+	TIM_TimeBaseInit(TIM4, &TIM_TimeBaseInitStruct);
 	
-	TIM_ITConfig(TIM7, TIM_IT_Update, ENABLE);
-	TIM_Cmd(TIM7, ENABLE);
+	TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
+	TIM_Cmd(TIM4, ENABLE);
 }
 
 
-void TIM7_IRQHandler(void)
+void TIM4_IRQHandler(void)
 {
     disk_timerproc();
-	TIM_ClearFlag(TIM7, TIM_FLAG_Update);
+	TIM_ClearFlag(TIM4, TIM_FLAG_Update);
 }
 
 void load_sound()
